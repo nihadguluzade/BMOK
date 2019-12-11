@@ -30,6 +30,7 @@ public class Location {
 			}
 		}
 		return null;
+		// todo: bu bir denemedir
 	}
 
 	public int getCapacity() {
