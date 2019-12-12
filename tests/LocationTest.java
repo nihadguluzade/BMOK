@@ -6,28 +6,60 @@ import java.util.ArrayList;
 
 public class LocationTest {
 
-    private ArrayList<Screen> screens = new ArrayList<>();
-    private int capacity;
-
+    private String locationName = "Kadikoy";
+    private ArrayList<Screen> screenList = new ArrayList<>();
+    private int numberOfScreens = 2;
+    private int coefficient;
+    private short screenNumber = 0;
 
     @Test
-    public void createScreensTest() {
-
-        screens.ensureCapacity(5);
-
-        capacity = 5;
-
-        int counter = 0;
-
-        for (int i = 0; i < capacity; i++) {
-            screens.add(new Screen());
-            counter++;
+    public void createScreens() {
+        for (int i = 0; i < numberOfScreens; ++i) {
+            screenList.add(new Screen(locationName, screenNumber++));
         }
+    }
 
-        for (Screen s: screens)
-            java.lang.System.out.println(s.getCrowd());
+    @Test
+    public void findScreen() {
+    }
 
-        Assert.assertEquals(1, counter);
+    @Test
+    public void printScreens() {
+        java.lang.System.out.println(locationName);
+        for (int i = 0; i < numberOfScreens; ++i) {
+            screenList.get(i).print();
+        }
+    }
 
+    @Test
+    public void getNumberOfScreens() {
+    }
+
+    @Test
+    public void setNumberOfScreens() {
+    }
+
+    @Test
+    public void getLocationName() {
+    }
+
+    @Test
+    public void setLocationName() {
+    }
+
+    @Test
+    public void getScreenList() {
+    }
+
+    @Test
+    public void setScreenList() {
+    }
+
+    @Test
+    public void getCoefficient() {
+    }
+
+    @Test
+    public void setCoefficient() {
     }
 }

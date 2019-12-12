@@ -12,6 +12,15 @@ public class Date {
         this.year = year;
     }
 
+    public Date sumMonths(int duration) {
+        int newMonth = month + duration;
+        if (newMonth > 12) {
+            year++;
+            newMonth -= 12;
+        }
+        return new Date(day, newMonth, year);
+    }
+
     /**
      * Get today's date from Calendar class
      * @return new today's date.
@@ -24,12 +33,13 @@ public class Date {
         return new Date(day, month+1, year);
     }
 
-    public int getDay() {
-        return day;
+    @Override
+    public String toString() {
+        return day + "." + month + "." + year;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    public int getDay() {
+        return day;
     }
 
     public int getMonth() {
@@ -42,9 +52,5 @@ public class Date {
 
     public int getYear() {
         return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 }

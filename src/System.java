@@ -5,7 +5,6 @@ public class System {
 
 	private static ArrayList<Location> locations = new ArrayList<>();
 	private static ArrayList<Client> clients = new ArrayList<>();
-	private static ArrayList<Client> requests = new ArrayList<>();
 
 	private final static int currentDay = Date.getToday().getDay();
 	private final static int currentMonth = Date.getToday().getMonth();
@@ -18,7 +17,19 @@ public class System {
 		locations.add(new Location("Davutpasa", 3));
 		locations.add(new Location("Esenler", 1));
 		locations.add(new Location("Gungoren", 5));
-		locations.add(new Location("Cevizlibag", 7));
+
+	}
+
+	private static void createScreens() {
+
+		locations.get(0).setNumberOfScreens(4); // set number of screens in Davutpasa
+		locations.get(0).createScreens();
+
+		locations.get(1).setNumberOfScreens(3); // set number of screens in Esenler
+		locations.get(1).createScreens();
+
+		locations.get(2).setNumberOfScreens(1); // set number of screens in Gungoren
+		locations.get(2).createScreens();
 
 	}
 
@@ -26,22 +37,7 @@ public class System {
 
 		clients.add(new Client("Ahmet", 100));
 		clients.add(new Client("Berk", 250));
-
-	}
-
-	private static void createScreens() {
-
-		locations.get(0).setCapacity(4); // set number of screens in Davutpasa
-		locations.get(0).createScreens();
-
-		locations.get(1).setCapacity(12); // set number of screens in Esenler
-		locations.get(1).createScreens();
-
-		locations.get(2).setCapacity(5); // set number of screens in Gungoren
-		locations.get(2).createScreens();
-
-		locations.get(3).setCapacity(10); // set number of screens in Cevizlibag
-		locations.get(3).createScreens();
+		clients.add(new Client("Caner", 50));
 
 	}
 
@@ -65,6 +61,7 @@ public class System {
 
 	public static boolean checkRequestDuration(Request request) {
 		return request.getDuration() <= 12;
+		// todo: check if input is integer
 	}
 
 	public static boolean checkRequestDate(Request request) {
@@ -105,7 +102,8 @@ public class System {
 		}
 
 		if (!checkRequestDate(request)) {
-			java.lang.System.out.println("Error: invalid date.");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName + ": " +
+					"Invalid date");
 			return;
 		}
 
@@ -114,18 +112,34 @@ public class System {
 			return;
 		}
 
+		// todo: add DECLINED message to errors
+
+		/*java.lang.System.out.println("Created request: " + request.getAdName() + " from " + clientName +
+				", " + request.getBeginDate().toString() + " - " + request.generateEndDate().toString() +
+				", " + request.getMinCrowdRate() + " crowd");*/
 
 		Objects.requireNonNull(getClient(clientName)).addRequest(request);
-		putAd(request);
+		putAd(getClient(clientName), request);
 	}
 
-	public static void putAd(Request request) {
+	public static void putAd(Client client, Request request) {
 
 		Screen screen = request.getLocation().findScreen(request.getMinCrowdRate());
-		if (screen == null) { // TODO: hata mesaji nasil yazilsin
-			java.lang.System.out.println("Screen with these conditions not available currently.");
+
+		if (screen == null) {
+			java.lang.System.out.println("Screen with these crowd size is not available in " + request.getLocationName());
+			return;
 		}
 
+		screen.addAd(request);
+		request.setClient(client);
+	}
+
+	public static void showAll() {
+		java.lang.System.out.println();
+		for (Location l: locations) {
+			l.printScreens();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -135,6 +149,11 @@ public class System {
 		createClients();
 
 		createRequest("Ahmet", new Request("Davutpasa", new Date(1,1,2020), 1, 50, "Trendyol"));
+		createRequest("Ahmet", new Request("Esenler", new Date(1,1,2020), 2, 10, "Hepsiburada"));
+		createRequest("Ahmet", new Request("Uskudar", new Date(1,3,2020), 1, 67, "n11"));
+		createRequest("Berk", new Request("Gungoren", new Date(1,1,2019), 3, 90, "Zara"));
+
+		showAll();
 
 	}
 

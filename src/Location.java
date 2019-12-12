@@ -4,41 +4,54 @@ import java.util.Comparator;
 public class Location {
 
 	private String locationName;
-	private ArrayList<Screen> screens;
-	private int capacity; // size of screens ArrayList
+	private ArrayList<Screen> screenList;
+	private int numberOfScreens; // size of screens ArrayList
 	private int coefficient; // will be used to determine values of screens
+	private short screenNumber = 0;
 	
 	public Location(String locationName, int coefficient) {
 		this.locationName = locationName;
 		this.coefficient = coefficient;
-		screens = new ArrayList<>();
+		screenList = new ArrayList<>();
 	}
 
 	/**
 	 * Creates the screens with random crowd size.
 	 */
 	public void createScreens() {
-		for (int i = 0; i < capacity; ++i)
-			screens.add(new Screen());
+		for (int i = 0; i < numberOfScreens; ++i) {
+			screenList.add(new Screen(locationName, screenNumber++));
+		}
 	}
 
+	/**
+	 * Find appropriate screen according to minimum crowd rate.
+	 * @param minCrowdRate provided by ad request
+	 */
 	public Screen findScreen(int minCrowdRate) {
-		screens.sort(Comparator.comparing(Screen::getCrowd)); // sort the arraylist according to crowd size
-		for (Screen s : screens) {
-			if (!s.isScreenFull() && minCrowdRate <= s.getCrowd()) {
+		screenList.sort(Comparator.comparing(Screen::getCrowd)); // sort the arraylist according to crowd size
+		for (Screen s : screenList) {
+			if (minCrowdRate <= s.getCrowd()) {
 				return s;
 			}
 		}
 		return null;
-		// todo: bu bir denemedir
 	}
 
-	public int getCapacity() {
-		return capacity;
+	public void printScreens() {
+		java.lang.System.out.println(locationName);
+		for (int i = 0; i < numberOfScreens; ++i) {
+			screenList.get(i).print();
+		}
+		java.lang.System.out.println();
 	}
 
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
+	public int getNumberOfScreens() {
+		return numberOfScreens;
+	}
+
+	public void setNumberOfScreens(int numberOfScreens) {
+		this.numberOfScreens = numberOfScreens;
 	}
 
 	public String getLocationName() {
@@ -49,20 +62,12 @@ public class Location {
 		this.locationName = locationName;
 	}
 
-	public ArrayList<Screen> getScreensArray() {
-		return screens;
+	public ArrayList<Screen> getScreenList() {
+		return screenList;
 	}
 
-	public void setScreensArray(ArrayList<Screen> screensArray) {
-		this.screens = screensArray;
-	}
-
-	public ArrayList<Screen> getScreens() {
-		return screens;
-	}
-
-	public void setScreens(ArrayList<Screen> screens) {
-		this.screens = screens;
+	public void setScreenList(ArrayList<Screen> screenList) {
+		this.screenList = screenList;
 	}
 
 	public int getCoefficient() {

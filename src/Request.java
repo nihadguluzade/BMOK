@@ -6,6 +6,7 @@ public class Request {
 	private int duration; // in month
 	private int minCrowdRate;
 	private String adName;
+	private Client client;
 
 	public Request(String locationName, Date beginDate, int duration, int minCrowdRate, String adName) {
 		this.locationName = locationName;
@@ -13,6 +14,22 @@ public class Request {
 		this.duration = duration;
 		this.minCrowdRate = minCrowdRate;
 		this.adName = adName;
+	}
+
+	public void printAd() {
+		java.lang.System.out.println(locationName + " ");
+	}
+
+	public Date generateEndDate() {
+		return beginDate.sumMonths(duration);
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Location getLocation() {
