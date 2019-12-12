@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class System {
@@ -62,7 +61,6 @@ public class System {
 
 	private static boolean checkRequestDuration(Request request) {
 		return request.getDuration() <= 12;
-		// todo: check if input is integer
 	}
 
 	protected static boolean checkRequestDate(Request request) {
@@ -157,20 +155,27 @@ public class System {
 
 		Date startDate = new Date(1,1,2020);
 
-		java.lang.System.out.println("\nREPORT FROM " + startDate.toString() + " TO " + startDate.sumMonths(12).toString());
+		java.lang.System.out.println("\nREPORT FROM " + startDate.toString() + " TO " + startDate.sumMonths(12).toString() + "\n");
 
 		for (Client c: clients) {
-			java.lang.System.out.println(c.getName() + ": " + c.getInitialBudget() + "₺");
+			java.lang.System.out.println(c.getName() + ": " + c.getInitialBudget() + "₺" + ", Requests: " +
+					c.getNumberOfRequests());
 		}
 
+		int income, yearlyIncome = 0;
 		for (int i = 0; i < 12; i++) {
-			java.lang.System.out.println(i + 1 + ". month\n");
-			for (Location l: locations) {
-				l.reportScreens(i + 1);
-			}
 			java.lang.System.out.println();
+			java.lang.System.out.println(i + 1 + ". MONTH");
+			income = 0;
+			for (Location l: locations) {
+				l.setIncome(0); // reset income, prevents logical bug
+				l.reportScreens(i + 1);
+				income += l.getIncome();
+			}
+			java.lang.System.out.println("Income: " + income + "₺");
+			yearlyIncome += income;
 		}
-
+		java.lang.System.out.println("\nYearly Income: " + yearlyIncome + "₺");
 	}
 
 	public static void main(String[] args) {
@@ -183,7 +188,7 @@ public class System {
 		createRequest("Ahmet", new Request("Davutpasa", new Date(1,1,2020), 2, 55, "Trendyol"));
 		createRequest("Berk", new Request("Davutpasa", new Date(12,6,2020), 3, 65, "Steam Summer Sale"));
 
-		showAll();
+//		showAll();
 		report();
 	}
 

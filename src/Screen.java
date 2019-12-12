@@ -42,6 +42,9 @@ public class Screen {
 			java.lang.System.out.println(screenId + "\t\tcrowd: " + crowd + "\t\t" + "monthly: " + price + "₺" + "\t\t");
 
 			Iterator<Request> iterator = ads.iterator(); // iterator is useful to avoid ConcurrentModificationException while removing ad from screen
+			int profit = 0;
+			int initialNumberOfAds = numberOfAds;
+			Request tempAd = ads.get(0);
 
 			while (iterator.hasNext()) {
 				Request ad = iterator.next();
@@ -66,6 +69,9 @@ public class Screen {
 					}
 				}
 			}
+
+			profit = price * initialNumberOfAds;
+			tempAd.getLocation().setIncome(profit); // doesn't matter which index, we only need to access location
 		}
 	}
 
@@ -74,10 +80,6 @@ public class Screen {
 			if (ad.isAdStarted(month)) return true;
 		}
 		return false;
-	}
-
-	public ArrayList<Request> getAds() {
-		return ads;
 	}
 
 	public int getNumberOfAds() {

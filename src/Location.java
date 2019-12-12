@@ -8,6 +8,7 @@ public class Location {
 	private int numberOfScreens; // size of screens ArrayList
 	private int coefficient; // will be used to determine values of screens
 	private short screenNumber = 0;
+	private int income;
 	
 	public Location(String locationName, int coefficient) {
 		this.locationName = locationName;
@@ -46,18 +47,18 @@ public class Location {
 		java.lang.System.out.println();
 	}
 
+	/**
+	 *
+	 * @param month
+	 * @return our monthly profit
+	 */
 	public void reportScreens(int month) {
 		for (Screen s: screenList) {
 			if (s.getNumberOfAds() != 0 && s.checkAdBeginDate(month)) {
 				java.lang.System.out.print("Loc: " + locationName + "\t" + coefficient + "↑" + "\t\t");
 				s.report(month);
-				java.lang.System.out.println();
 			}
 		}
-	}
-
-	public int getNumberOfScreens() {
-		return numberOfScreens;
 	}
 
 	public void setNumberOfScreens(int numberOfScreens) {
@@ -68,23 +69,19 @@ public class Location {
 		return locationName;
 	}
 
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
-	}
-
-	public ArrayList<Screen> getScreenList() {
-		return screenList;
-	}
-
-	public void setScreenList(ArrayList<Screen> screenList) {
-		this.screenList = screenList;
-	}
-
 	public int getCoefficient() {
 		return coefficient;
 	}
 
 	public void setCoefficient(int coefficient) {
 		this.coefficient = coefficient;
+	}
+
+	public int getIncome() {
+		return income;
+	}
+
+	public void setIncome(int income) {
+		this.income = income;
 	}
 }

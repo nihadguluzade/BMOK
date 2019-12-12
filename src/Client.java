@@ -6,7 +6,7 @@ public class Client {
 	private int budget;
 	private int initialBudget;
 	private ArrayList<Request> requestedAds;
-	private int counter = 0; // size of ArrayList
+	private int numberOfRequests = 0; // size of ArrayList
 
 	public Client(String name, int budget) {
 		this.name = name;
@@ -17,7 +17,11 @@ public class Client {
 
 	public void addRequest(Request ad) {
 		requestedAds.add(ad);
-		counter++;
+		numberOfRequests++;
+	}
+
+	public int getNumberOfRequests() {
+		return numberOfRequests;
 	}
 
 	public int getInitialBudget() {
