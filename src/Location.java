@@ -20,7 +20,7 @@ public class Location {
 	 */
 	public void createScreens() {
 		for (int i = 0; i < numberOfScreens; ++i) {
-			screenList.add(new Screen(locationName, screenNumber++));
+			screenList.add(new Screen(this, ++screenNumber));
 		}
 	}
 
@@ -39,11 +39,21 @@ public class Location {
 	}
 
 	public void printScreens() {
-		java.lang.System.out.println(locationName);
+		java.lang.System.out.println(locationName + "\t" + coefficient + "⁂");
 		for (int i = 0; i < numberOfScreens; ++i) {
 			screenList.get(i).print();
 		}
 		java.lang.System.out.println();
+	}
+
+	public void reportScreens(int month) {
+		for (Screen s: screenList) {
+			if (s.getNumberOfAds() != 0 && s.checkAdBeginDate(month)) {
+				java.lang.System.out.print("Loc: " + locationName + "\t" + coefficient + "↑" + "\t\t");
+				s.report(month);
+				java.lang.System.out.println();
+			}
+		}
 	}
 
 	public int getNumberOfScreens() {

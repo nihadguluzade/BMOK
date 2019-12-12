@@ -24,6 +24,13 @@ public class Request {
 		return beginDate.sumMonths(duration);
 	}
 
+	/**
+	 * Check if ad begin date is started. Useful in report.
+	 */
+	public boolean isAdStarted(int month) {
+		return month >= beginDate.getMonth();
+	}
+
 	public Client getClient() {
 		return client;
 	}

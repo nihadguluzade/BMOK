@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class System {
@@ -35,8 +36,8 @@ public class System {
 
 	private static void createClients() {
 
-		clients.add(new Client("Ahmet", 100));
-		clients.add(new Client("Berk", 250));
+		clients.add(new Client("Ahmet", 1000));
+		clients.add(new Client("Berk", 2000));
 		clients.add(new Client("Caner", 50));
 
 	}
@@ -49,7 +50,7 @@ public class System {
 		return null;
 	}
 
-	public static Location checkRequestLocation(Request request) {
+	private static Location checkRequestLocation(Request request) {
 
 		for (Location l: locations) {
 			if (l.getLocationName().equals(request.getLocationName()))
@@ -59,12 +60,12 @@ public class System {
 
 	}
 
-	public static boolean checkRequestDuration(Request request) {
+	private static boolean checkRequestDuration(Request request) {
 		return request.getDuration() <= 12;
 		// todo: check if input is integer
 	}
 
-	public static boolean checkRequestDate(Request request) {
+	protected static boolean checkRequestDate(Request request) {
 
 		if (request.getBeginDate().getDay() < 1 || request.getBeginDate().getDay() > 31) return false;
 
@@ -80,39 +81,41 @@ public class System {
 		return true;
 	}
 
-	public static boolean checkRequestCrowdRate(Request request) {
+	private static boolean checkRequestCrowdRate(Request request) {
 		return request.getMinCrowdRate() > 0 && request.getMinCrowdRate() <= 100;
 	}
 
-	public static void createRequest(String clientName, Request request) {
+	private static void createRequest(String clientName, Request request) {
 
 		if (getClient(clientName) == null) {
-			java.lang.System.out.println("Invalid client name.");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
+					"in " + request.getLocationName() + ": Invalid client name.");
 			return;
 		}
 
 		if (checkRequestLocation(request) == null) {
-			java.lang.System.out.println("Sorry, we don't offer this location.");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
+					" in " + request.getLocationName() + ": We don't offer this location.");
 			return;
 		} else request.setLocation(checkRequestLocation(request));
 
 		if (!checkRequestDuration(request)) {
-			java.lang.System.out.println("Sorry, the duration limit is 1 year.");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
+					" in " + request.getLocationName() + ": Sorry, the duration limit is 1 year.");
 			return;
 		}
 
 		if (!checkRequestDate(request)) {
-			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName + ": " +
-					"Invalid date");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
+					" in " + request.getLocationName() + ": Invalid date");
 			return;
 		}
 
 		if (!checkRequestCrowdRate(request)) {
-			java.lang.System.out.println("Sorry, crowd rate must be between 1 and 100.");
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
+					" in " + request.getLocationName() + ": Sorry, crowd rate must be between 1 and 100.");
 			return;
 		}
-
-		// todo: add DECLINED message to errors
 
 		/*java.lang.System.out.println("Created request: " + request.getAdName() + " from " + clientName +
 				", " + request.getBeginDate().toString() + " - " + request.generateEndDate().toString() +
@@ -122,24 +125,52 @@ public class System {
 		putAd(getClient(clientName), request);
 	}
 
-	public static void putAd(Client client, Request request) {
+	private static void putAd(Client client, Request request) {
 
 		Screen screen = request.getLocation().findScreen(request.getMinCrowdRate());
 
 		if (screen == null) {
-			java.lang.System.out.println("Screen with these crowd size is not available in " + request.getLocationName());
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + client.getName() +
+					": Screen with this crowd size is not available in " + request.getLocationName());
 			return;
 		}
 
+		if (client.getBudget() < screen.getPrice() * request.getDuration()) {
+			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + client.getName() +
+					" in " + request.getLocationName() + ": Not enough budget. (Required: " + screen.getPrice() * request.getDuration() + "₺)");
+			return;
+		}
+
+		client.setBudget(client.getBudget() - screen.getPrice() * request.getDuration());
 		screen.addAd(request);
 		request.setClient(client);
 	}
 
-	public static void showAll() {
+	private static void showAll() {
 		java.lang.System.out.println();
 		for (Location l: locations) {
 			l.printScreens();
 		}
+	}
+
+	private static void report() {
+
+		Date startDate = new Date(1,1,2020);
+
+		java.lang.System.out.println("\nREPORT FROM " + startDate.toString() + " TO " + startDate.sumMonths(12).toString());
+
+		for (Client c: clients) {
+			java.lang.System.out.println(c.getName() + ": " + c.getInitialBudget() + "₺");
+		}
+
+		for (int i = 0; i < 12; i++) {
+			java.lang.System.out.println(i + 1 + ". month\n");
+			for (Location l: locations) {
+				l.reportScreens(i + 1);
+			}
+			java.lang.System.out.println();
+		}
+
 	}
 
 	public static void main(String[] args) {
@@ -148,13 +179,12 @@ public class System {
 		createScreens();
 		createClients();
 
-		createRequest("Ahmet", new Request("Davutpasa", new Date(1,1,2020), 1, 50, "Trendyol"));
-		createRequest("Ahmet", new Request("Esenler", new Date(1,1,2020), 2, 10, "Hepsiburada"));
-		createRequest("Ahmet", new Request("Uskudar", new Date(1,3,2020), 1, 67, "n11"));
-		createRequest("Berk", new Request("Gungoren", new Date(1,1,2019), 3, 90, "Zara"));
+		createRequest("Ahmet", new Request("Esenler", new Date(1,1,2020), 4, 32, "Hepsiburada"));
+		createRequest("Ahmet", new Request("Davutpasa", new Date(1,1,2020), 2, 55, "Trendyol"));
+		createRequest("Berk", new Request("Davutpasa", new Date(12,6,2020), 3, 65, "Steam Summer Sale"));
 
 		showAll();
-
+		report();
 	}
 
 }

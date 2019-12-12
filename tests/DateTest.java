@@ -48,4 +48,14 @@ public class DateTest {
         Assert.assertEquals(e_date3.getYear(), date3.getYear());
 
     }
+
+    @Test
+    public void compareDates() {
+
+        Date d1 = new Date(15,6,2000);
+        Date d2 = new Date(15,6,2000);
+
+        Assert.assertEquals(true, d1.equals(d2));
+
+    }
 }

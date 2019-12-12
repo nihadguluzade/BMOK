@@ -14,9 +14,6 @@ public class LocationTest {
 
     @Test
     public void createScreens() {
-        for (int i = 0; i < numberOfScreens; ++i) {
-            screenList.add(new Screen(locationName, screenNumber++));
-        }
     }
 
     @Test

@@ -12,6 +12,15 @@ public class Date {
         this.year = year;
     }
 
+    /**
+     * Is used to clone object, useful while reporting.
+     */
+    public Date(Date otherDate) {
+        this.day = otherDate.day;
+        this.month = otherDate.month;
+        this.year = otherDate.year;
+    }
+
     public Date sumMonths(int duration) {
         int newMonth = month + duration;
         if (newMonth > 12) {
@@ -36,6 +45,10 @@ public class Date {
     @Override
     public String toString() {
         return day + "." + month + "." + year;
+    }
+
+    public boolean equals(Date date) {
+        return date.getDay() == day && date.getMonth() == month && date.getYear() == year;
     }
 
     public int getDay() {
