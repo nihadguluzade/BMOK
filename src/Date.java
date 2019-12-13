@@ -1,5 +1,7 @@
+import java.time.LocalDate;
 import java.util.Calendar;
 
+/** Utility class */
 public class Date {
 
     private int day;
@@ -12,15 +14,14 @@ public class Date {
         this.year = year;
     }
 
-    /**
-     * Is used to clone object, useful while reporting.
-     */
+    /** Second constructor. Is used to clone object. */
     public Date(Date otherDate) {
         this.day = otherDate.day;
         this.month = otherDate.month;
         this.year = otherDate.year;
     }
 
+    /** Adds month(s) to the date. */
     public Date sumMonths(int duration) {
         month += + duration;
         if (month > 12) {
@@ -34,32 +35,29 @@ public class Date {
         return new Date(day, month, year);
     }
 
-    /**
-     * Checks if the today's time is after than the time represented
-     * by the argument.
-     * @param other Date we want to compare to.
-     * @return true if @param is after than today
-     */
-    public boolean isAfterThan(Date other) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        Calendar otherCalendar = Calendar.getInstance();
-        otherCalendar.set(other.getYear(), other.getMonth(), other.getDay());
-        return calendar.compareTo(otherCalendar) > 0;
+    public boolean isAfter(Date other) {
+        LocalDate date = LocalDate.of(this.year, this.month, this.day);
+        LocalDate otherDate = LocalDate.of(other.year, other.month, other.day);
+        return date.isAfter(otherDate);
     }
 
-    /**
-     * Checks if the today's time is before than the time represented
-     * by the argument.
-     * @param other Date we want to compare to.
-     * @return true if @param is before than today
-     */
-    public boolean isBeforeThan(Date other) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        Calendar otherCalendar = Calendar.getInstance();
-        otherCalendar.set(other.getYear(), other.getMonth(), other.getDay());
-        return calendar.compareTo(otherCalendar) < 0;
+    public boolean isBefore(Date other) {
+        LocalDate date = LocalDate.of(this.year, this.month, this.day);
+        LocalDate otherDate = LocalDate.of(other.year, other.month, other.day);
+        return date.isBefore(otherDate);
+    }
+
+
+    public boolean isEqualsWith(Date other) {
+        return day == other.day && month == other.month && year == other.year;
+    }
+
+
+    public boolean isInBetween(Date _beginDate, Date _endDate) {
+        LocalDate beginDate = LocalDate.of(_beginDate.year, _beginDate.month, _beginDate.day);
+        LocalDate middleDate = LocalDate.of(this.year, this.month, this.day);
+        LocalDate endDate = LocalDate.of(_endDate.year, _endDate.month, _endDate.day);
+        return !middleDate.isBefore(beginDate) && middleDate.isBefore(endDate);
     }
 
     /**
@@ -91,11 +89,8 @@ public class Date {
         return month;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
     public int getYear() {
         return year;
     }
+
 }

@@ -5,8 +5,8 @@ public class Request {
 	private int minCrowdRate;
 	private Date beginDate;
 	private int duration; // in month
-	private Date endDate;
-	private Client client;
+	private Date endDate; // system generates it
+	private Client client; // system assigns after validating request
 
 	public Request(String adName, int minCrowdRate, Date beginDate, int duration) {
 		this.adName = adName;
@@ -15,34 +15,19 @@ public class Request {
 		this.duration = duration;
 	}
 
-	public void printAd() {
-		java.lang.System.out.println(location.getLocationName() + " ");
-	}
-
+	/**
+	 * Generates end date according to the duration provided by client.
+	 */
 	public void generateEndDate() {
 		endDate = new Date(beginDate);
 		endDate.sumMonths(duration);
 	}
 
 	/**
-	 * Check if ad begin date is started. Useful in report.
+	 * Checks if ad's begin date is started. Useful in report.
 	 */
-	public boolean isAdStarted(int month, int year) {
-//		java.lang.System.out.println(beginDate.getMonth() <= month);
-//		java.lang.System.out.println(beginDate.getYear() <= year);
-//		java.lang.System.out.println(month < endDate.getMonth());
-//		java.lang.System.out.println(year <= endDate.getYear());
-//		if ( (beginDate.getMonth() <= month && beginDate.getYear() <= year) && (month < endDate.getMonth() || year <= endDate.getYear())) return true;
-		if ( (beginDate.getMonth() <= month && beginDate.getYear() <= year)  ) {
-			if (year < endDate.getYear())
-				return true;
-			else if (year == endDate.getYear()) {
-				if (month < endDate.getMonth()) return true;
-			}
-		}
-
-		return false;
-
+	public boolean isAdStarted(Date reportDate) {
+		return reportDate.isInBetween(beginDate, endDate);
 	}
 
 	public Date getEndDate() {
@@ -69,31 +54,15 @@ public class Request {
 		return beginDate;
 	}
 
-	public void setBeginDate(Date beginDate) {
-		this.beginDate = beginDate;
-	}
-
 	public int getDuration() {
 		return duration;
-	}
-
-	public void setDuration(int duration) {
-		this.duration = duration;
 	}
 
 	public int getMinCrowdRate() {
 		return minCrowdRate;
 	}
 
-	public void setMinCrowdRate(int minCrowdRate) {
-		this.minCrowdRate = minCrowdRate;
-	}
-
 	public String getAdName() {
 		return adName;
-	}
-
-	public void setAdName(String adName) {
-		this.adName = adName;
 	}
 }

@@ -4,15 +4,15 @@ public class Client {
 
 	private String name;
 	private int budget;
-	private int initialBudget;
+	private int initialBudget; // stores initial budget, useful in report
 	private ArrayList<Request> requestedAds;
-	private int numberOfRequests = 0; // size of ArrayList
+	private int numberOfRequests = 0; // counter for the arrayList
 
 	public Client(String name, int budget) {
 		this.name = name;
 		this.budget = budget;
 		initialBudget = budget;
-		requestedAds = new ArrayList<Request>();
+		requestedAds = new ArrayList<>();
 	}
 
 	public void addRequest(Request ad) {
