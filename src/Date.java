@@ -22,12 +22,44 @@ public class Date {
     }
 
     public Date sumMonths(int duration) {
-        int newMonth = month + duration;
-        if (newMonth > 12) {
+        month += + duration;
+        if (month > 12) {
             year++;
-            newMonth -= 12;
+            month -= 12;
         }
-        return new Date(day, newMonth, year);
+        else if (month <= 0) {
+            year--;
+            month += 12;
+        }
+        return new Date(day, month, year);
+    }
+
+    /**
+     * Checks if the today's time is after than the time represented
+     * by the argument.
+     * @param other Date we want to compare to.
+     * @return true if @param is after than today
+     */
+    public boolean isAfterThan(Date other) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        Calendar otherCalendar = Calendar.getInstance();
+        otherCalendar.set(other.getYear(), other.getMonth(), other.getDay());
+        return calendar.compareTo(otherCalendar) > 0;
+    }
+
+    /**
+     * Checks if the today's time is before than the time represented
+     * by the argument.
+     * @param other Date we want to compare to.
+     * @return true if @param is before than today
+     */
+    public boolean isBeforeThan(Date other) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        Calendar otherCalendar = Calendar.getInstance();
+        otherCalendar.set(other.getYear(), other.getMonth(), other.getDay());
+        return calendar.compareTo(otherCalendar) < 0;
     }
 
     /**

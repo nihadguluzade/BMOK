@@ -40,7 +40,7 @@ public class Location {
 	}
 
 	public void printScreens() {
-		java.lang.System.out.println(locationName + "\t" + coefficient + "⁂");
+		java.lang.System.out.println(locationName + "\t" + coefficient + "↑");
 		for (int i = 0; i < numberOfScreens; ++i) {
 			screenList.get(i).print();
 		}
@@ -52,17 +52,25 @@ public class Location {
 	 * @param month
 	 * @return our monthly profit
 	 */
-	public void reportScreens(int month) {
+	public void reportScreens(int month, int year) {
 		for (Screen s: screenList) {
-			if (s.getNumberOfAds() != 0 && s.checkAdBeginDate(month)) {
-				java.lang.System.out.print("Loc: " + locationName + "\t" + coefficient + "↑" + "\t\t");
-				s.report(month);
+			if (s.getNumberOfAds() != 0 && s.checkAdBeginDate(month, year)) {
+				java.lang.System.out.print("\nLOC: " + locationName + "\t\t" + "VALUE: " + coefficient + "↑" + "\t\t");
+				s.report(month, year);
 			}
 		}
 	}
 
+	public ArrayList<Screen> getScreenList() {
+		return screenList;
+	}
+
 	public void setNumberOfScreens(int numberOfScreens) {
 		this.numberOfScreens = numberOfScreens;
+	}
+
+	public int getNumberOfScreens() {
+		return numberOfScreens;
 	}
 
 	public String getLocationName() {
@@ -71,10 +79,6 @@ public class Location {
 
 	public int getCoefficient() {
 		return coefficient;
-	}
-
-	public void setCoefficient(int coefficient) {
-		this.coefficient = coefficient;
 	}
 
 	public int getIncome() {

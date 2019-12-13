@@ -1,34 +1,52 @@
 public class Request {
 
+	private String adName;
 	private Location location;
-	private String locationName;
+	private int minCrowdRate;
 	private Date beginDate;
 	private int duration; // in month
-	private int minCrowdRate;
-	private String adName;
+	private Date endDate;
 	private Client client;
 
-	public Request(String locationName, Date beginDate, int duration, int minCrowdRate, String adName) {
-		this.locationName = locationName;
+	public Request(String adName, int minCrowdRate, Date beginDate, int duration) {
+		this.adName = adName;
+		this.minCrowdRate = minCrowdRate;
 		this.beginDate = beginDate;
 		this.duration = duration;
-		this.minCrowdRate = minCrowdRate;
-		this.adName = adName;
 	}
 
 	public void printAd() {
-		java.lang.System.out.println(locationName + " ");
+		java.lang.System.out.println(location.getLocationName() + " ");
 	}
 
-	public Date generateEndDate() {
-		return beginDate.sumMonths(duration);
+	public void generateEndDate() {
+		endDate = new Date(beginDate);
+		endDate.sumMonths(duration);
 	}
 
 	/**
 	 * Check if ad begin date is started. Useful in report.
 	 */
-	public boolean isAdStarted(int month) {
-		return month >= beginDate.getMonth();
+	public boolean isAdStarted(int month, int year) {
+//		java.lang.System.out.println(beginDate.getMonth() <= month);
+//		java.lang.System.out.println(beginDate.getYear() <= year);
+//		java.lang.System.out.println(month < endDate.getMonth());
+//		java.lang.System.out.println(year <= endDate.getYear());
+//		if ( (beginDate.getMonth() <= month && beginDate.getYear() <= year) && (month < endDate.getMonth() || year <= endDate.getYear())) return true;
+		if ( (beginDate.getMonth() <= month && beginDate.getYear() <= year)  ) {
+			if (year < endDate.getYear())
+				return true;
+			else if (year == endDate.getYear()) {
+				if (month < endDate.getMonth()) return true;
+			}
+		}
+
+		return false;
+
+	}
+
+	public Date getEndDate() {
+		return endDate;
 	}
 
 	public Client getClient() {
@@ -45,14 +63,6 @@ public class Request {
 
 	public void setLocation(Location location) {
 		this.location = location;
-	}
-
-	public String getLocationName() {
-		return locationName;
-	}
-
-	public void setLocationName(String locationName) {
-		this.locationName = locationName;
 	}
 
 	public Date getBeginDate() {

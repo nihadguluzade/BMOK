@@ -10,7 +10,7 @@ public class System {
 	private final static int currentMonth = Date.getToday().getMonth();
 	private final static int currentYear = Date.getToday().getYear();
 
-	private final static int maxYear = 2025;
+	private final static int maxYear = 2028;
 
 	private static void createLocations() {
 
@@ -49,10 +49,10 @@ public class System {
 		return null;
 	}
 
-	private static Location checkRequestLocation(Request request) {
+	private static Location checkRequestLocation(String location) {
 
 		for (Location l: locations) {
-			if (l.getLocationName().equals(request.getLocationName()))
+			if (l.getLocationName().equals(location))
 				return l;
 		}
 		return null;
@@ -83,35 +83,42 @@ public class System {
 		return request.getMinCrowdRate() > 0 && request.getMinCrowdRate() <= 100;
 	}
 
-	private static void createRequest(String clientName, Request request) {
+	/**
+	 * Main function to create request of client. Before accepting request several controls are
+	 * performed with the methods above.
+	 * @param clientName name of the client that wants to put ad
+	 * @param location location where client wants to put ad
+	 * @param request of the client
+	 */
+	private static void createRequest(String clientName, String location, Request request) {
 
 		if (getClient(clientName) == null) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
-					"in " + request.getLocationName() + ": Invalid client name.");
+					"in " + location + ": Invalid client name.");
 			return;
 		}
 
-		if (checkRequestLocation(request) == null) {
+		if (checkRequestLocation(location) == null) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
-					" in " + request.getLocationName() + ": We don't offer this location.");
+					" in " + location + ": We don't offer this location.");
 			return;
-		} else request.setLocation(checkRequestLocation(request));
+		} else request.setLocation(checkRequestLocation(location));
 
 		if (!checkRequestDuration(request)) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
-					" in " + request.getLocationName() + ": Sorry, the duration limit is 1 year.");
+					" in " + location + ": Sorry, the duration limit is 1 year.");
 			return;
 		}
 
 		if (!checkRequestDate(request)) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
-					" in " + request.getLocationName() + ": Invalid date");
+					" in " + location + ": Invalid date");
 			return;
 		}
 
 		if (!checkRequestCrowdRate(request)) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + clientName +
-					" in " + request.getLocationName() + ": Sorry, crowd rate must be between 1 and 100.");
+					" in " + location + ": Sorry, crowd rate must be between 1 and 100.");
 			return;
 		}
 
@@ -129,19 +136,20 @@ public class System {
 
 		if (screen == null) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + client.getName() +
-					": Screen with this crowd size is not available in " + request.getLocationName());
+					": Screen with this crowd size is not available in " + request.getLocation().getLocationName());
 			return;
 		}
 
 		if (client.getBudget() < screen.getPrice() * request.getDuration()) {
 			java.lang.System.out.println("DECLINED request " + request.getAdName() + " from " + client.getName() +
-					" in " + request.getLocationName() + ": Not enough budget. (Required: " + screen.getPrice() * request.getDuration() + "₺)");
+					" in " + request.getLocation().getLocationName() + ": Not enough budget. (Required: " + screen.getPrice() * request.getDuration() + "₺)");
 			return;
 		}
 
 		client.setBudget(client.getBudget() - screen.getPrice() * request.getDuration());
 		screen.addAd(request);
 		request.setClient(client);
+		request.generateEndDate();
 	}
 
 	private static void showAll() {
@@ -151,28 +159,58 @@ public class System {
 		}
 	}
 
+	private static void showIntro() {
+		java.lang.System.out.println("\nCLIENTS:");
+		for (Client c: clients)
+		{
+			if (c.getNumberOfRequests() > 0)
+			{
+				java.lang.System.out.println(c.getName() + ": " + c.getInitialBudget() + "₺" + ", Requests: " +
+						c.getNumberOfRequests());
+
+				for (Request r : c.getRequestedAds()) {
+					java.lang.System.out.println("Name: " + r.getAdName() + "\t\t" + r.getLocation().getLocationName() +
+							"\t\tBegin: " + r.getBeginDate().toString() + "\t\tDuration: " + r.getDuration() + "\t\tMinCrowd: " + r.getMinCrowdRate());
+				}
+				java.lang.System.out.println();
+			}
+		}
+
+		java.lang.System.out.println("LOCATIONS:");
+		for (Location l: locations) {
+			java.lang.System.out.println(l.getLocationName() + "\t" + "Value: " + l.getCoefficient() + "↑\t" +
+					"Screens: " + l.getNumberOfScreens());
+			for (Screen s: l.getScreenList()) {
+				java.lang.System.out.println("Name: " + s.getScreenId() + ", crowd: " + s.getCrowd() + ", price: " + s.getPrice() + "₺");
+			}
+			java.lang.System.out.println("");
+		}
+	}
+
 	private static void report() {
 
 		Date startDate = new Date(1,1,2020);
-
 		java.lang.System.out.println("\nREPORT FROM " + startDate.toString() + " TO " + startDate.sumMonths(12).toString() + "\n");
+		startDate.sumMonths(-12); // get back to start date
 
-		for (Client c: clients) {
-			java.lang.System.out.println(c.getName() + ": " + c.getInitialBudget() + "₺" + ", Requests: " +
-					c.getNumberOfRequests());
-		}
+
 
 		int income, yearlyIncome = 0;
-		for (int i = 0; i < 12; i++) {
-			java.lang.System.out.println();
-			java.lang.System.out.println(i + 1 + ". MONTH");
+		for (int i = 0; i < 12; i++)
+		{
+			java.lang.System.out.println("\n\t\t\t\t\t\t\t\t" + (i + 1) + ". MONTH (" +	startDate.toString() + " - " + startDate.sumMonths(1).toString() + ")");
 			income = 0;
-			for (Location l: locations) {
-				l.setIncome(0); // reset income, prevents logical bug
-				l.reportScreens(i + 1);
+
+			for (Location l: locations)
+			{
+				l.setIncome(0);
+//				l.reportScreens(i + 1, startDate.getYear());
+				startDate.sumMonths(-1);
+				l.reportScreens(startDate.getMonth(), startDate.getYear());
+				startDate.sumMonths(1);
 				income += l.getIncome();
 			}
-			java.lang.System.out.println("Income: " + income + "₺");
+			java.lang.System.out.println("\nIncome: " + income + "₺");
 			yearlyIncome += income;
 		}
 		java.lang.System.out.println("\nYearly Income: " + yearlyIncome + "₺");
@@ -184,11 +222,11 @@ public class System {
 		createScreens();
 		createClients();
 
-		createRequest("Ahmet", new Request("Esenler", new Date(1,1,2020), 4, 32, "Hepsiburada"));
-		createRequest("Ahmet", new Request("Davutpasa", new Date(1,1,2020), 2, 55, "Trendyol"));
-		createRequest("Berk", new Request("Davutpasa", new Date(12,6,2020), 3, 65, "Steam Summer Sale"));
+		createRequest("Ahmet", "Esenler", new Request("Hepsiburada", 20, new Date(1,10,2020), 4));
+//		createRequest("Berk", "Davutpasa", new Request("Trendyol", 55, new Date(1,1,2020), 11));
 
 //		showAll();
+		showIntro();
 		report();
 	}
 

@@ -20,6 +20,10 @@ public class Client {
 		numberOfRequests++;
 	}
 
+	public ArrayList<Request> getRequestedAds() {
+		return requestedAds;
+	}
+
 	public int getNumberOfRequests() {
 		return numberOfRequests;
 	}

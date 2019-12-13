@@ -26,7 +26,7 @@ public class Screen {
 		if (numberOfAds != 0) {
 			for (Request r : ads) {
 				java.lang.System.out.println("\t" + r.getAdName() + "\t\t" +
-						r.getBeginDate().toString() + " - " + r.generateEndDate().toString() + "\t\t" +
+						r.getBeginDate().toString() + " - " + r.getEndDate().toString() + "\t\t" +
 						"crowd: " + r.getMinCrowdRate() + "\t" + r.getClient().getName() + "\t" + r.getClient().getBudget() + "₺");
 			}
 		}
@@ -35,11 +35,11 @@ public class Screen {
 		}
 	}
 
-	public void report(int month) {
+	public void report(int month, int year) {
 
 		if (numberOfAds != 0) {
 
-			java.lang.System.out.println(screenId + "\t\tcrowd: " + crowd + "\t\t" + "monthly: " + price + "₺" + "\t\t");
+			java.lang.System.out.println("SCREEN: " + screenId + "\t\tCROWD: " + crowd + "\t\t" + "MONTHLY: " + price + "₺" + "\t\t");
 
 			Iterator<Request> iterator = ads.iterator(); // iterator is useful to avoid ConcurrentModificationException while removing ad from screen
 			int profit = 0;
@@ -49,23 +49,29 @@ public class Screen {
 			while (iterator.hasNext()) {
 				Request ad = iterator.next();
 
-				if (ad.getBeginDate().getMonth() <= month && month < ad.generateEndDate().getMonth())
+				//if (ad.getBeginDate().getMonth() <= month && (ad.getBeginDate().getYear() >= year || ad.getEndDate().getYear() == year))
+				if (ad.isAdStarted(month, year))
 				{
-//					Date monthStartDate = ad.getBeginDate(); // doesn't create new object
-					Date monthStartDate = new Date(ad.getBeginDate());
-					monthStartDate.setMonth(month);
-					Date monthEndDate = monthStartDate.sumMonths(1);
+					ad.getClient().setInitialBudget(ad.getClient().getInitialBudget() - price); // calculate the client's budget
 
-					ad.getClient().setInitialBudget(ad.getClient().getInitialBudget() - price);
+					java.lang.System.out.println("AD:  " + ad.getAdName() + "\t\t" +
+							ad.getBeginDate().toString() + "\t\t" +
+							ad.getEndDate().toString() + "\t\t" +
+							"MINCROWD: " + ad.getMinCrowdRate() + "\t\t" +
+							"CLIENT: " + ad.getClient().getName() + "\t" +
+							"BUDGET: " + ad.getClient().getInitialBudget() + "₺");
 
-					java.lang.System.out.println("Ad:  " + ad.getAdName() + "\t\t" +
-							monthStartDate.toString() + "\t\t" + monthEndDate.toString() + "\t\t" +
-							"crowd: " + ad.getMinCrowdRate() + "\t\t" + ad.getClient().getName() + "\t" +
-							ad.getClient().getInitialBudget() + "₺");
-
-					if (monthEndDate.equals(ad.generateEndDate())) { // remove ad from screen if deadline came
-						iterator.remove();
-						numberOfAds--;
+					if (ad.getDuration() < 12) {
+						if (month == ad.getEndDate().getMonth() - 1 && year == ad.getEndDate().getYear()) { // remove ad from screen if deadline came
+							iterator.remove();
+							numberOfAds--;
+						}
+					}
+					else  {
+						if (year != ad.getBeginDate().getYear() && month == ad.getBeginDate().getMonth()) {
+							iterator.remove();
+							numberOfAds--;
+						}
 					}
 				}
 			}
@@ -75,11 +81,15 @@ public class Screen {
 		}
 	}
 
-	public boolean checkAdBeginDate(int month) {
+	public boolean checkAdBeginDate(int month, int year) {
 		for (Request ad: ads) {
-			if (ad.isAdStarted(month)) return true;
+			if (ad.isAdStarted(month, year)) return true;
 		}
 		return false;
+	}
+
+	public String getScreenId() {
+		return screenId;
 	}
 
 	public int getNumberOfAds() {
