@@ -1,4 +1,4 @@
-[English](./README.md) | Türkçe
+English | [Türkçe](./README.tr.md)
 
 # BMÖK Course Project - Dynamic Ad Panels Program
 

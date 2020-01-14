@@ -1,4 +1,4 @@
-English | [Türkçe](./README.tr.md)
+[English](./README.md) | Türkçe
 
 # BMÖK (Bilgisayar Mühendisliğinde Özel Konular) Projesi - Dinamik Reklam Tabelası Uygulaması
 
