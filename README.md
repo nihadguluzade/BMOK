@@ -1,6 +1,6 @@
-# BMÖK Course Project - Dynamic Ad Panels Program
+[English](./README.md) | Türkçe
 
-Dil: :tr:
+# BMÖK Course Project - Dynamic Ad Panels Program
 
 Simple console program where it was required to develop "Dynamic Ad Panels Program" using OOP. For this purpose, Java language is used to code it.
 

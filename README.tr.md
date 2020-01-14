@@ -1,6 +1,6 @@
-# BMÖK (Bilgisayar Mühendisliğinde Özel Konular) Projesi - Dinamik Reklam Tabelası Uygulaması
+English | [Türkçe](./README.tr.md)
 
-Dil: :gb:
+# BMÖK (Bilgisayar Mühendisliğinde Özel Konular) Projesi - Dinamik Reklam Tabelası Uygulaması
 
 Nesneye yönelik programlama kullanarak bir Dinamik Reklam Tabelası Uygulaması tasarlanması istenilmiş.
 
