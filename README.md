@@ -8,3 +8,7 @@ Simple console program where it was required to develop "Dynamic Ad Panels Progr
 Assume there are cities that have several LED ad panels and ad-givers (customers). Customers have specific budget and requirements (location, duration, crowd rate, etc.). Our ad panels contains installed cameras and through this "hardware" it is possible to collect the overall crowd rate during the whole month. Our implementation checks if ad panels meet the intended requirements of consumers and if so, will generate the 1 year report (date can be modified) of the budget.
 
 Java 11 SDK version used to compile.
+
+![Screen 1](https://raw.githubusercontent.com/nihadguluzade/BasicAdSystem-BMOK-Project/master/screenshots/WhatsApp%20Image%202019-12-16%20at%2001.52.37(2).jpeg)
+
+![Screen 2](https://raw.githubusercontent.com/nihadguluzade/BasicAdSystem-BMOK-Project/master/screenshots/WhatsApp%20Image%202019-12-16%20at%2001.52.37(3).jpeg)
